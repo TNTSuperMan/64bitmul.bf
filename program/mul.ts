@@ -2,11 +2,11 @@ import { exec } from "../iint";
 import { bf, to_string, type Inst } from "../src";
 import { add, copy, copyadd, for_loop, if_gt, move, set, temp } from "../src/lib";
 
-const num =   [16, 17, 18, 19, 20, 21, 22, 23] as const;
-const carry = [24, 25, 26, 27, 28, 29, 30, 31] as const;
-const mul =   [32, 33, 34, 35, 36, 37, 38, 39] as const;
+const num =   Array(8).fill(0).map((_,i)=>i+10) as [number,number,number,number,number,number,number,number];
+const carry = Array(8).fill(0).map((_,i)=>i+18) as [number,number,number,number,number,number,number,number];
+const mul =   Array(8).fill(0).map((_,i)=>i+26) as [number,number,number,number,number,number,number,number];
 
-const before = 4;
+const before = 0;
 
 function add_carry(digit: number, val_ptr: number): Inst[] {
     const mem = carry[digit]!;
@@ -23,9 +23,9 @@ function add_carry(digit: number, val_ptr: number): Inst[] {
     ].flat()
 }
 
-const c_i = 5;
-const c_down = 6;
-const calc_up = 7;
+const c_i = 1;
+const c_down = 2;
+const calc_up = 3;
 
 function calc_up_mul(a: number, b: number) {
     return [
@@ -44,8 +44,8 @@ function calc_up_mul(a: number, b: number) {
     ].flat()
 }
 
-const c_tmp1 = 8;
-const c_tmp2 = 9;
+const c_tmp1 = 4;
+const c_tmp2 = 5;
 
 const dc = (c: number, n: number, m: number) => [
     set(c_tmp2,0),copy(num[n]!,c_tmp1),for_loop(c_tmp1,copyadd(mul[m]!,c_tmp2)),
@@ -89,11 +89,10 @@ function exec_mul() {
     ].flat()
 }
 
-const stdin_ptr=10;
 
 const prog = (to_string(bf`
     ${set(num[0], 1)}
-    ${stdin_ptr},[
+    ${temp[3]},[
         ${mul[0]},
         ${mul[1]},
         ${mul[2]},
@@ -103,7 +102,7 @@ const prog = (to_string(bf`
         ${mul[6]},
         ${mul[7]},
         ${exec_mul()}
-    ${stdin_ptr},]
+    ${temp[3]},]
     ${num[0]}.
     ${num[1]}.
     ${num[2]}.

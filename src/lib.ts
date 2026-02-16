@@ -3,7 +3,7 @@ import { bf, type Inst } from "./core";
 const num_as_op = (val: number): string => val >= 0 ? "+".repeat(val) : "-".repeat(-val)
 
 export const temp = [
-    0, 1, 2, 3
+    6, 7, 8, 9
 ] as const;
 
 export function if_gt(left: number, right: number, block: Inst[]): Inst[] {
