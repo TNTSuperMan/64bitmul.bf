@@ -1,3 +1,4 @@
+import { file } from "bun";
 import { exec } from "../iint";
 import { bf, to_string, type Inst } from "../src";
 import { add, copy, copyadd, for_loop, if_gt, move, set, temp } from "../src/lib";
@@ -90,7 +91,7 @@ function exec_mul() {
 }
 
 
-const prog = (to_string(bf`
+const prog = to_string(bf`
     ${set(num[0], 1)}
     ${temp[3]},[
         ${mul[0]},
@@ -111,6 +112,9 @@ const prog = (to_string(bf`
     ${num[5]}.
     ${num[6]}.
     ${num[7]}.
-`).replaceAll(/[^\+-<>\[\]<>!]/g, ""));
-console.log(prog);
+`).replaceAll(/[^\+-<>\[\]<>!]/g, "");
+console.log(`[
+${await file("LICENSE").text()}]
+${prog.replaceAll(/.{100}/g,(a)=>a+"\n")}
+`);
 //exec(new Uint8Array(15), prog);
