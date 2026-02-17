@@ -12,24 +12,26 @@ const proc = spawn({
     stdout: "pipe",
 });
 
-const brainrot = [
-    1, 0xD9, 0x4F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    1, 0x27, 0x43, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    1, 0x2F, 0x3E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    1, 0x8F, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    1, 0x1F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    1, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    1, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+const brainrot: bigint[] = [
+    2n,
+    17n,
+    31n,
+    1423n,
+    15919n,
+    17191n,
+    20441n,
+];
+
+const bufview = new DataView(new ArrayBuffer(8));
+const stdin = [
+    ...brainrot.flatMap(e=>(bufview.setBigUint64(0, e, true), [1, ...new Uint8Array(bufview.buffer)])),
     0,
 ];
 
-const two_pow = [
-    ...Array(64).fill([1, ...crypto.getRandomValues(new Uint8Array(8))]).flat(),
-    0,
-];
-
-await proc.stdin.write(new Uint8Array(two_pow));
+await proc.stdin.write(new Uint8Array(stdin));
 await proc.exited;
 const end = nanoseconds();
-console.log(`\nCalculated in ${end - start}ns`);
-console.log(await proc.stdout.bytes());
+const bytes = await proc.stdout.bytes();
+console.log(new TextDecoder().decode(bytes));
+console.log(`Calculated in ${end - start}ns`);
+console.log(bytes);
