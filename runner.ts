@@ -7,7 +7,7 @@ if (!env.BF_RUNTIME) {
 
 const start = nanoseconds();
 const proc = spawn({
-    cmd: [env.BF_RUNTIME!, "64bitmul.bf"],
+    cmd: [...(env.BF_RUNTIME!).split(" "), "64bitmul.bf"],
     stdin: "pipe",
     stdout: "pipe",
 });
